@@ -12,4 +12,8 @@ export class EnvService {
   get PORT(): number {
     return process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
   }
+
+  get JWT_SECRET(): string {
+    return process.env.JWT_SECRET || 'jwt_secret';
+  }
 }
