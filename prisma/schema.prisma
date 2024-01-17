@@ -11,14 +11,39 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid()) @db.Uuid
-  first_name String   @db.VarChar(25)
-  last_name  String   @db.VarChar(25)
-  email      String   @unique @db.VarChar(50)
-  password   String   @db.Text
-  active     Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id             String          @id @default(uuid()) @db.Uuid
+  first_name     String          @db.VarChar(25)
+  last_name      String          @db.VarChar(25)
+  email          String          @unique @db.VarChar(50)
+  password       String          @db.Text
+  profile_photo  String?         @db.Text
+  active         Boolean         @default(false)
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @default(now())
+  authentication Authentication?
+  token          Token?
 
   @@map("users")
+}
+
+model Authentication {
+  id         String   @id @default(uuid()) @db.Uuid
+  token      String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user_id    String   @unique @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@map("authentications")
+}
+
+model Token {
+  id         String   @id @default(uuid()) @db.Uuid
+  token      String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user_id    String   @unique @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@map("tokens")
 }
