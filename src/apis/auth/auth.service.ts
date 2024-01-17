@@ -70,6 +70,10 @@ export class AuthService {
       throw new UnauthorizedException('Email Or Password Wrong');
     }
 
+    if (!userSelected.active) {
+      throw new UnauthorizedException('Please Verify Your Account');
+    }
+
     const isPasswordValid = await this.bcryptService.comparePassword(
       dto.password,
       userSelected.password,
