@@ -47,7 +47,7 @@ export class AuthController {
     });
   }
 
-  @Get('/refresh')
+  @Get('/refresh/:token')
   async refreshAccess(@Res() res: Response, @Param('token') token: string) {
     const data = await this.authService.refreshAccess(token);
 

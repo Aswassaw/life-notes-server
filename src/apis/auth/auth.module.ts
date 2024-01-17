@@ -12,7 +12,7 @@ import { BcryptService } from 'src/services/bcrypt/bcrypt.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { EmailService } from 'src/services/email/email.service';
 import { TemplateService } from 'src/services/email/template.service';
-import { JwtAuthMiddleware } from 'src/jwtauth/jwtauth.middleware';
+import { JwtAuthMiddleware } from 'src/middlewares/jwtauth/jwtauth.middleware';
 
 @Module({
   controllers: [AuthController],
