@@ -83,6 +83,33 @@ export class AuthService {
       throw new UnauthorizedException('Email Or Password Wrong');
     }
 
+    const tokenSelected = await this.prismaService.authentication.findUnique({
+      where: {
+        user_id: userSelected.id,
+      },
+    });
+    if (tokenSelected) {
+      await this.prismaService.authentication.delete({
+        where: {
+          user_id: userSelected.id,
+        },
+      });
+    }
+
+    const refreshToken = this.jwtService.sign(
+      { id: userSelected.id },
+      {
+        secret: this.envService.JWT_SECRET,
+        expiresIn: 604800,
+      },
+    );
+    await this.prismaService.authentication.create({
+      data: {
+        token: refreshToken,
+        user_id: userSelected.id,
+      },
+    });
+
     return {
       accessToken: this.jwtService.sign(
         { id: userSelected.id },
@@ -91,13 +118,7 @@ export class AuthService {
           expiresIn: 120,
         },
       ),
-      refreshToken: this.jwtService.sign(
-        { id: userSelected.id },
-        {
-          secret: this.envService.JWT_SECRET,
-          expiresIn: 604800,
-        },
-      ),
+      refreshToken,
     };
   }
 
@@ -131,5 +152,32 @@ export class AuthService {
       },
       { timeout: 5000 },
     );
+  }
+
+  async refreshAccess(token: string) {
+    try {
+      const auth = this.jwtService.verify(token, {
+        secret: this.envService.JWT_SECRET,
+      });
+
+      const refreshToken = await this.prismaService.authentication.findUnique({
+        where: {
+          token,
+        },
+      });
+      if (!refreshToken) throw new Error();
+
+      return {
+        accessToken: this.jwtService.sign(
+          { id: auth.id },
+          {
+            secret: this.envService.JWT_SECRET,
+            expiresIn: 120,
+          },
+        ),
+      };
+    } catch (error) {
+      throw new BadRequestException('Refresh Token Invalid');
+    }
   }
 }

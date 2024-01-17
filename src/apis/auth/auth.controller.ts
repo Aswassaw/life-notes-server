@@ -46,4 +46,15 @@ export class AuthController {
       statusCode: 200,
     });
   }
+
+  @Get('/refresh')
+  async refreshAccess(@Res() res: Response, @Param('token') token: string) {
+    const data = await this.authService.refreshAccess(token);
+
+    return res.status(200).json({
+      message: 'Access Token Generated',
+      statusCode: 200,
+      data,
+    });
+  }
 }
