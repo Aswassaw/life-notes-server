@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -98,5 +99,37 @@ export class AuthService {
         },
       ),
     };
+  }
+
+  async verify(token: string) {
+    await this.prismaService.$transaction(
+      async (prisma) => {
+        const tokenSelected = await prisma.token.findUnique({
+          where: {
+            token: token,
+          },
+        });
+
+        if (!tokenSelected) {
+          throw new BadRequestException('Invalid Activation Token');
+        }
+
+        await this.prismaService.user.update({
+          where: {
+            id: tokenSelected.user_id,
+          },
+          data: {
+            active: true,
+          },
+        });
+
+        await this.prismaService.token.delete({
+          where: {
+            token,
+          },
+        });
+      },
+      { timeout: 5000 },
+    );
   }
 }

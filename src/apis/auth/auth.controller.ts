@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -26,6 +26,16 @@ export class AuthController {
       message: 'Login Success',
       statusCode: 200,
       data,
+    });
+  }
+
+  @Get('/verify/:token')
+  async verify(@Res() res: Response, @Param('token') token: string) {
+    await this.authService.verify(token);
+
+    return res.status(200).json({
+      message: 'Verify Success',
+      statusCode: 200,
     });
   }
 }
