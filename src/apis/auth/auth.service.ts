@@ -6,9 +6,11 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { PrismaService } from 'src/config/prisma/prisma.service';
-import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
-import { EnvService } from 'src/utils/variables/env.service';
+import { EnvService } from 'src/services/variables/env.service';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { BcryptService } from 'src/services/bcrypt/bcrypt.service';
+import { EmailService } from 'src/services/email/email.service';
+import { TemplateService } from 'src/services/email/template.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,8 @@ export class AuthService {
     private bcryptService: BcryptService,
     private jwtService: JwtService,
     private envService: EnvService,
+    private emailService: EmailService,
+    private templateService: TemplateService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -36,8 +40,23 @@ export class AuthService {
         last_name: dto.lastName,
         email: dto.email,
         password: passwordHashed,
+        token: {
+          create: {
+            token: Math.random().toString(36).slice(2),
+          },
+        },
       },
     });
+
+    const templateEmail = {
+      from: `"Life Notes" <${this.envService.EMAIL_FROM}>`,
+      to: dto.email.toLowerCase(),
+      subject: 'Thanks For Your Registration',
+      html: this.templateService.verifyAfterRegistration({
+        link: 'https://1cak.com/',
+      }),
+    };
+    this.emailService.sendEmail(templateEmail);
   }
 
   async login(dto: LoginDto) {
