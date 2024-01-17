@@ -30,6 +30,6 @@ export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(JwtAuthMiddleware)
-      .forRoutes({ path: '/auth/check', method: RequestMethod.POST });
+      .forRoutes({ path: '/auth/check', method: RequestMethod.GET });
   }
 }

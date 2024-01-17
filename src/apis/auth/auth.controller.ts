@@ -38,4 +38,12 @@ export class AuthController {
       statusCode: 200,
     });
   }
+
+  @Get('/check')
+  async check(@Res() res: Response) {
+    return res.status(200).json({
+      message: 'Token Is Valid',
+      statusCode: 200,
+    });
+  }
 }
