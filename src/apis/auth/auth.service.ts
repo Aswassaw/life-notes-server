@@ -34,6 +34,7 @@ export class AuthService {
     }
 
     const passwordHashed = await this.bcryptService.hashPassword(dto.password);
+    const activationToken = `${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
     await this.prismaService.user.create({
       data: {
         first_name: dto.firstName,
@@ -42,7 +43,7 @@ export class AuthService {
         password: passwordHashed,
         token: {
           create: {
-            token: Math.random().toString(36).slice(2),
+            token: activationToken,
           },
         },
       },
@@ -53,7 +54,7 @@ export class AuthService {
       to: dto.email.toLowerCase(),
       subject: 'Thanks For Your Registration',
       html: this.templateService.verifyAfterRegistration({
-        link: 'https://1cak.com/',
+        link: `${this.envService.API_URL}/auth/verify/${activationToken}`,
       }),
     };
     this.emailService.sendEmail(templateEmail);

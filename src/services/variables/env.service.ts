@@ -41,4 +41,10 @@ export class EnvService {
   get CLOUDINARY_API_SECRET(): string {
     return process.env.CLOUDINARY_API_SECRET || 'cloudinary_api_secret';
   }
+  get API_URL(): string {
+    return process.env.API_URL || 'api_url';
+  }
+  get APP_URL(): string {
+    return process.env.APP_URL || 'app_url';
+  }
 }

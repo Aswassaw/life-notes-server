@@ -8,10 +8,10 @@ export class TemplateService {
       <p>
         Anda menerima email ini karena Anda telah melakukan registrasi di Life Notes.
         <br>
-        Anda diharapkan dapat memverifikasi akun anda melalui link di bawah ini:
+        Anda diharuskan untuk memverifikasi akun anda melalui link di bawah ini:
       </p>
 
-      <a href="${link}" style="color: white;" class="auth-button">Verify</a>
+      <a href="${link}" style="color: white;" class="auth-button">VERIFY</a>
 
       <p>
         Link alternatif: <a href="${link}">${link}</a>
