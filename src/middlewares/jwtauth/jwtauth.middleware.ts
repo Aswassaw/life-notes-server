@@ -4,7 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { NewRequest } from 'src/interfaces/new.request';
 import { EnvService } from 'src/services/variables/env.service';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class JwtAuthMiddleware implements NestMiddleware {
     private envService: EnvService,
   ) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  use(req: NewRequest, res: Response, next: NextFunction) {
     try {
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
@@ -25,7 +26,7 @@ export class JwtAuthMiddleware implements NestMiddleware {
       const auth = this.jwtService.verify(token, {
         secret: this.envService.JWT_SECRET,
       });
-      res.locals.auth = auth;
+      req.auth = auth;
       next();
     } catch (error) {
       throw new UnauthorizedException('Access Token Invalid');
