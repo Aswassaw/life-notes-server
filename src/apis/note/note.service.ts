@@ -30,4 +30,23 @@ export class NoteService {
       },
     });
   }
+
+  async findAll(authId: string) {
+    return await this.prismaService.note.findMany({
+      where: {
+        user_id: authId,
+      },
+    });
+  }
+
+  async findById(noteId: string, authId: string) {
+    return await this.prismaService.note.findFirst({
+      where: {
+        AND: {
+          id: noteId,
+          user_id: authId,
+        },
+      },
+    });
+  }
 }
