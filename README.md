@@ -45,14 +45,13 @@ CLOUDINARY_API_SECRET=
 ```
 
 - Migrate database using `npx prisma migrate dev`
+- Generate Prisma ORM config using `npx prisma generate`
 
 ### Executing program
 
 - Run program with `yarn run start:dev` for development and `yarn run start:prod` for production
 
 <!-- RELATED PROJECT -->
-
-## Related Project
 
 ## Authors
 
